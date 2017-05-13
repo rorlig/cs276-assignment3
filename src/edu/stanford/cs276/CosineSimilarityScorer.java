@@ -9,13 +9,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.io.OutputStream;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Skeleton code for the implementation of a 
@@ -59,6 +53,66 @@ public class CosineSimilarityScorer extends AScorer {
      * between a query vector and the term score vectors
      * for a document.
      */
+    Map<String,ArrayList<Double>> typeVec=new HashMap<String,ArrayList<Double>>();
+    ArrayList<Double> queryVec=new ArrayList<Double>();
+    ArrayList<Double> docVec=new ArrayList<Double>();
+
+    for(String word:tfQuery.keySet()){
+        queryVec.add(tfQuery.get(word));
+        for(String type:tfs.keySet()){
+            double val=0;
+            if(tfs.get(type).containsKey(word)){
+                val=tfs.get(type).get(word);
+            }
+            if (typeVec.containsKey(type)) {
+                typeVec.get(type).add(val);
+            } else {
+                ArrayList list=new ArrayList<Double>();
+                list.add(val);
+                typeVec.put(type,list);
+            }
+        }
+    }
+    //update queryVec
+    for (String type:typeVec.keySet()){
+        if (type.equals("url")){
+            for(int i=0;i<typeVec.get(type).size();i++){
+                typeVec.get(type).set(i,
+                        typeVec.get(type).get(i)*urlweight);
+            }
+        }else if (type.equals("title")){
+            for(int i=0;i<typeVec.get(type).size();i++){
+                typeVec.get(type).set(i,
+                        typeVec.get(type).get(i)*titleweight);
+            }
+
+        }else if (type.equals("body")){
+            for(int i=0;i<typeVec.get(type).size();i++){
+                typeVec.get(type).set(i,
+                        typeVec.get(type).get(i)*bodyweight);
+            }
+
+        }else if (type.equals("header")){
+            for(int i=0;i<typeVec.get(type).size();i++){
+                typeVec.get(type).set(i,
+                        typeVec.get(type).get(i)*headerweight);
+            }
+
+        } else {
+            //this is for anchor
+            for(int i=0;i<typeVec.get(type).size();i++){
+                typeVec.get(type).set(i,
+                        typeVec.get(type).get(i)*anchorweight);
+            }
+        }
+    }
+    //interim doc vector
+    for(String type:typeVec.keySet()){
+        docVec=vectorOperation("add",docVec,typeVec.get(type));
+    }
+
+    for(double dbl: vectorOperation("multiply",docVec,queryVec))
+        score+=dbl;
     return score;
   }
   
@@ -133,5 +187,34 @@ public class CosineSimilarityScorer extends AScorer {
     // You should NOT modify the writeParaValues method.
     writeParaValues("cosinePara.txt");
     return getNetScore(tfs,q,tfQuery,d);
+  }
+
+  private ArrayList<Double> vectorOperation(String operation, ArrayList<Double> list1,ArrayList<Double> list2){
+      ArrayList<Double> result=new ArrayList<Double>();
+      if (operation.equals("add")){
+          if (list1.size()==0)
+              return list2;
+          else {
+              if (list1.size()!=list2.size())
+                  return null;
+              else {
+                  for (int i = 0; i < list1.size(); i++) {
+                      result.add(i, list1.get(i) + list2.get(i));
+                  }
+                  return result;
+              }
+
+          }
+      } else {
+          //this is for multiply
+          if (list1.size()!=list2.size()){
+              return null;
+          } else {
+              for (int i=0;i<list1.size();i++){
+                  result.add(i,list1.get(i)*list2.get(i));
+              }
+              return result;
+          }
+      }
   }
 }
