@@ -21,11 +21,11 @@ public class CosineSimilarityScorer extends AScorer {
    * TODO: You will want to tune the values for
    * the weights for each field.
    */
-  double urlweight = 0.6;
-  double titleweight  = 0.4;
-  double bodyweight = 0.1;
-  double headerweight = 0.3;
-  double anchorweight = 0.3;
+  double urlweight = 0.9;
+  double titleweight  = 0.7;
+  double bodyweight = 0.3;
+  double headerweight = 0.6;
+  double anchorweight = 0.5;
   double smoothingBodyLength = 1.0;
   
   /**
@@ -73,7 +73,7 @@ public class CosineSimilarityScorer extends AScorer {
             }
         }
     }
-    //update queryVec
+    //update typeVec
     for (String type:typeVec.keySet()){
         if (type.equals("url")){
             for(int i=0;i<typeVec.get(type).size();i++){
@@ -123,9 +123,7 @@ public class CosineSimilarityScorer extends AScorer {
    * @param q the Query
    */
   public void normalizeTFs(Map<String,Map<String, Double>> tfs,Document d, Query q) {
-    int length=d.body_length; //body length normalization
-    if (length==0)
-        length=500; //smoothing
+    int length=d.body_length+500; //body length normalization and smoothing
 
     for(String type:TFTYPES){
         for (String word:new HashSet<String>(q.queryWords)){
