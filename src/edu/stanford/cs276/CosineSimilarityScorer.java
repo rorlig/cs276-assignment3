@@ -46,13 +46,6 @@ public class CosineSimilarityScorer extends AScorer {
    */
   public double getNetScore(Map<String, Map<String, Double>> tfs, Query q, Map<String,Double> tfQuery, Document d) {
     double score = 0.0;
-    
-    /*
-     * TODO : Your code here
-     * See Equation 2 in the handout regarding the net score
-     * between a query vector and the term score vectors
-     * for a document.
-     */
     Map<String,ArrayList<Double>> typeVec=new HashMap<String,ArrayList<Double>>();
     ArrayList<Double> queryVec=new ArrayList<Double>();
     ArrayList<Double> docVec=new ArrayList<Double>();
@@ -123,7 +116,7 @@ public class CosineSimilarityScorer extends AScorer {
    * @param q the Query
    */
   public void normalizeTFs(Map<String,Map<String, Double>> tfs,Document d, Query q) {
-    int length=d.body_length+500; //body length normalization and smoothing
+    double length=smoothingBodyLength*(d.body_length+500); //body length normalization and smoothing
 
     for(String type:TFTYPES){
         for (String word:new HashSet<String>(q.queryWords)){
@@ -131,7 +124,7 @@ public class CosineSimilarityScorer extends AScorer {
                 if (tfs.get(type).containsKey(word)) {
                     HashMap<String, Double> hmap = new HashMap<String, Double>();
                     hmap = (HashMap<String, Double>) tfs.get(type);
-                    hmap.put(word, (double) hmap.get(word) / length);
+                    hmap.put(word, hmap.get(word) / length);
                 }
             }
         }
