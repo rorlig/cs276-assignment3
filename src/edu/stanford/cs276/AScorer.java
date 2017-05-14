@@ -56,7 +56,7 @@ public abstract class AScorer {
     uniqTokens.addAll(tokens);
     for(String s:uniqTokens){
         tfQuery.put(s,this.idfs.getOrDefault(s,1D)*
-                (getCount(s,tokens)>0?(1+Math.log(getCount(s,tokens))):0));
+                (1+Math.log(getCount(s,tokens))));
     }
     return tfQuery;
   }
@@ -98,6 +98,9 @@ public abstract class AScorer {
                 hset.addAll(Arrays.asList(u.getHost().split(".")));
                 hset.addAll(Arrays.asList(u.getPath().split("/")));
                 for (String s : hset) {
+                    if (s.indexOf('.')!=-1){
+                        s=s.split(".")[0];
+                    }
                     if (s.equals(queryWord))
                         if (tfs.get("url").containsKey(queryWord))
                             tfs.get("url").put(queryWord, tfs.get("url").get(queryWord) + 1);
