@@ -99,7 +99,8 @@ public abstract class AScorer {
                 hset.addAll(Arrays.asList(u.getPath().split("/")));
                 for (String s : hset) {
                     if (s.indexOf('.')!=-1){
-                        s=s.split(".")[0];
+                        s=s.split("\\.")[0];
+
                     }
                     if (s.equals(queryWord))
                         if (tfs.get("url").containsKey(queryWord))

@@ -30,33 +30,47 @@ public class SmallestWindowScorer extends CosineSimilarityScorer {
           URL url=new URL(d.url);
           HashSet<String> hset=new HashSet<String>();
           hset.addAll(Arrays.asList(url.getHost().split(".")));
-          hset.addAll(Arrays.asList(url.getPath().split(".")[0].split("/")));
+          for(String elem:url.getPath().split("/")){
+              if (elem.indexOf('.')!=-1)
+                  elem=elem.split("\\.")[0];
+              hset.add(elem);
+          }
           if(hset.containsAll(uniqTokens))
               smallestWindow=hset.size();
           hset.clear();
           //title
-          hset.addAll(Arrays.asList(d.title.split(" ")));
-          if (hset.containsAll(uniqTokens) && hset.size()<smallestWindow)
-              smallestWindow=hset.size();
+          if (d.title!=null) {
+              hset.addAll(Arrays.asList(d.title.split(" ")));
+              if (hset.containsAll(uniqTokens) && hset.size() < smallestWindow)
+                  smallestWindow = hset.size();
+          }
           hset.clear();
+          /*
           //bodyhits (let's validate)
-          hset.addAll(d.body_hits.keySet());
-          if(hset.containsAll(uniqTokens) && hset.size()<smallestWindow)
-              smallestWindow=hset.size();
+          if (d.body_hits!=null) {
+              hset.addAll(d.body_hits.keySet());
+              if (hset.containsAll(uniqTokens) && hset.size() < smallestWindow)
+                  smallestWindow = hset.size();
+          }
           hset.clear();
+          */
           //anchor text
-          for (String text:d.anchors.keySet()){
-              hset.addAll(Arrays.asList(text.split(" ")));
-              if (hset.containsAll(uniqTokens) && hset.size()<smallestWindow)
-                  smallestWindow=hset.size();
-              hset.clear();
+          if (d.anchors!=null) {
+              for (String text : d.anchors.keySet()) {
+                  hset.addAll(Arrays.asList(text.split(" ")));
+                  if (hset.containsAll(uniqTokens) && hset.size() < smallestWindow)
+                      smallestWindow = hset.size();
+                  hset.clear();
+              }
           }
           //headers
-          for(String header:d.headers){
-              hset.addAll(Arrays.asList(header.split(" ")));
-              if(hset.containsAll(uniqTokens) && hset.size()<smallestWindow)
-                  smallestWindow=hset.size();
-              hset.clear();
+          if (d.headers!=null) {
+              for (String header : d.headers) {
+                  hset.addAll(Arrays.asList(header.split(" ")));
+                  if (hset.containsAll(uniqTokens) && hset.size() < smallestWindow)
+                      smallestWindow = hset.size();
+                  hset.clear();
+              }
           }
       } catch (MalformedURLException e) {
           e.printStackTrace();
