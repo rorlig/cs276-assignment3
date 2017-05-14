@@ -38,11 +38,11 @@ public class Rank {
       scorer = new BM25Scorer(idfs, queryDict);
     } else if (scoreType.equals("window")) {
       // feel free to change this to match your cosine scorer if you choose to build on top of that instead
-      scorer = new SmallestWindowScorer(idfs, queryDict);
+      scorer = new SmallestWindowScorer(idfs);
     } else if (scoreType.equals("extra")) {
       scorer = new ExtraCreditScorer(idfs);
     }
-      // ranking result Map.
+    // ranking result Map.
     Map<Query, List<Document>> queryRankings = new HashMap<Query, List<Document>>();
     //Map<Query,List<String>> queryRankings = new HashMap<Query,List<String>>();
 
@@ -64,24 +64,19 @@ public class Rank {
       Collections.sort(docAndScores, new Comparator<Pair<Document,Double>>() {
         @Override
         public int compare(Pair<Document, Double> o1, Pair<Document, Double> o2) {
-          /*
-           * TODO : Your code here
-           * Define a custom compare function to help sort urls
-           * urls for a query based on scores.
-           */
           if (o1.getSecond()>o2.getSecond())
-            return 1;
-          else if (o1.getSecond()<o2.getSecond())
             return -1;
+          else if (o1.getSecond()<o2.getSecond())
+            return 1;
           else {
             if (o1.getFirst().page_rank > o2.getFirst().page_rank)
-              return 1;
-            else
               return -1;
+            else
+              return 1;
           }
         }
       });
-      
+
       //put completed rankings into map
       List<Document> curRankings = new ArrayList<Document>();
       for (Pair<Document,Double> docAndScore : docAndScores)
@@ -92,9 +87,9 @@ public class Rank {
   }
 
   /**
-    * Print ranked results.
-    * @param queryRankings the mapping of queries to rankings
-    */
+   * Print ranked results.
+   * @param queryRankings the mapping of queries to rankings
+   */
   public static void printRankedResults(Map<Query,List<Document>> queryRankings) {
     for (Query query : queryRankings.keySet()) {
       StringBuilder queryBuilder = new StringBuilder();
@@ -102,23 +97,23 @@ public class Rank {
         queryBuilder.append(s);
         queryBuilder.append(" ");
       }
-      
+
       System.out.println("query: " + queryBuilder.toString());
       for (Document res : queryRankings.get(query)) {
         System.out.println(
-          "  url: " + res.url + "\n" +
-          "    title: " + res.title + "\n" +
-          "    debug: " + res.debugStr
+                "  url: " + res.url + "\n" +
+                        "    title: " + res.title + "\n" +
+                        "    debug: " + res.debugStr
         );
       }
-    } 
+    }
   }
-  
+
   /**
-    * Writes ranked results to file.
-    * @param queryRankings the mapping of queries to rankings
-    * @param outputFilePath the destination file path
-    */
+   * Writes ranked results to file.
+   * @param queryRankings the mapping of queries to rankings
+   * @param outputFilePath the destination file path
+   */
   public static void writeRankedResultsToFile(Map<Query,List<Document>> queryRankings,String outputFilePath) {
     try {
       File file = new File(outputFilePath);
@@ -126,30 +121,30 @@ public class Rank {
       if (!file.exists()) {
         file.createNewFile();
       }
-      
+
       FileWriter fw = new FileWriter(file.getAbsoluteFile());
       BufferedWriter bw = new BufferedWriter(fw);
-      
+
       for (Query query : queryRankings.keySet()) {
         StringBuilder queryBuilder = new StringBuilder();
         for (String s : query.queryWords) {
           queryBuilder.append(s);
           queryBuilder.append(" ");
         }
-        
+
         String queryStr = "query: " + queryBuilder.toString() + "\n";
         System.out.print(queryStr);
         bw.write(queryStr);
-        
+
         for (Document res : queryRankings.get(query)) {
           String urlString =
-            "  url: " + res.url + "\n" +
-            "    title: " + res.title + "\n" +
-            "    debug: " + res.debugStr + "\n";
+                  "  url: " + res.url + "\n" +
+                          "    title: " + res.title + "\n" +
+                          "    debug: " + res.debugStr + "\n";
           System.out.print(urlString);
           bw.write(urlString);
         }
-      }  
+      }
       bw.close();
     } catch (IOException e) {
       e.printStackTrace();
@@ -157,12 +152,12 @@ public class Rank {
   }
 
   /**
-    * Main method for Rank.
-    * args[0] : signal files for ranking query, url pairs
-    * args[1] : ranking function choice from {baseline, cosine, bm25, extra, window}
-    * args[2] : PA1 corpus to build idf values (when args[3] is true), or existing idfs file to load (when args[2] is false)
-    * args[3] : true: build from PA1 corpus, false: load from existing idfs.
-    */
+   * Main method for Rank.
+   * args[0] : signal files for ranking query, url pairs
+   * args[1] : ranking function choice from {baseline, cosine, bm25, extra, window}
+   * args[2] : PA1 corpus to build idf values (when args[3] is true), or existing idfs file to load (when args[2] is false)
+   * args[3] : true: build from PA1 corpus, false: load from existing idfs.
+   */
   public static void main(String[] args) throws IOException {
 
     if (args.length != 4) {
@@ -196,7 +191,7 @@ public class Rank {
     }
 
     if (!(taskOption.equals("baseline") || taskOption.equals("cosine") || taskOption.equals("bm25")
-        || taskOption.equals("extra") || taskOption.equals("window"))) {
+            || taskOption.equals("extra") || taskOption.equals("window"))) {
       System.err.println("Invalid scoring type; should be either 'baseline', 'bm25', 'cosine', 'window', or 'extra'");
       return;
     }
