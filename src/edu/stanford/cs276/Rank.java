@@ -65,14 +65,14 @@ public class Rank {
         @Override
         public int compare(Pair<Document, Double> o1, Pair<Document, Double> o2) {
           if (o1.getSecond()>o2.getSecond())
-            return 1;
-          else if (o1.getSecond()<o2.getSecond())
             return -1;
+          else if (o1.getSecond()<o2.getSecond())
+            return 1;
           else {
             if (o1.getFirst().page_rank > o2.getFirst().page_rank)
-              return 1;
-            else
               return -1;
+            else
+              return 1;
           }
         }
       });

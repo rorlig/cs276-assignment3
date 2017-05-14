@@ -31,7 +31,7 @@ public abstract class AScorer {
   */
   public String getDebugStr(Document d, Query q)
   {
-    return "Pagerank: " + Integer.toString(d.page_rank);
+    return "Rating: " + this.getSimScore(d,q);
   }
   
     /**
