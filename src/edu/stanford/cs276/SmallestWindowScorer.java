@@ -94,7 +94,7 @@ public class SmallestWindowScorer extends CosineSimilarityScorer {
       boostScore=1;
     else
         boostScore=(smallestWindow+uniqTokens.size())/smallestWindow;
-    return boostScore;
+    return Math.pow(5,boostScore);
   }
   
   @Override
