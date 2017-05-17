@@ -32,15 +32,27 @@ public class BM25Scorer extends AScorer {
 //  double smoothingBodyLength = 1.0;
   
   // BM25-specific weights
-  double burl = 0.1;
-  double btitle = 0.1;
-  double bheader = 0.1;
-  double bbody = 0.1;
-  double banchor = 0.1;
-  
-  double k1 = 0.1;
-  double pageRankLambda = 0.1;
-  double pageRankLambdaPrime = 0.1;
+//  double burl = 0.1;
+//  double btitle = 0.1;
+//  double bheader = 0.1;
+//  double bbody = 0.1;
+//  double banchor = 0.1;
+//
+//  double k1 = 0.1;
+//  double pageRankLambda = 0.1;
+//  double pageRankLambdaPrime = 0.1;
+
+
+    /////// BM25 specific weights ///////////
+    double burl=.75;
+    double btitle=1.0;
+    double bheader=.2;
+    double bbody=.8;
+    double banchor=0.8;
+
+    double k1=1;
+    double pageRankLambda=1;
+    double pageRankLambdaPrime=0.7;
   
   // query -> url -> document
   Map<Query,Map<String, Document>> queryDict; 
