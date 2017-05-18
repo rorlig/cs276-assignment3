@@ -30,7 +30,7 @@ public class BM25Scorer extends AScorer {
   double headerweight = 0.6;
   double anchorweight = 0.5;
 //  double smoothingBodyLength = 1.0;
-  
+
   // BM25-specific weights
 //  double burl = 0.1;
 //  double btitle = 0.1;
@@ -50,9 +50,10 @@ public class BM25Scorer extends AScorer {
     double bbody=.8;
     double banchor=0.8;
 
-    double k1=1;
-    double pageRankLambda=1;
-    double pageRankLambdaPrime=0.7;
+
+    double k1=2.5;
+    double pageRankLambda=1.6;
+    double pageRankLambdaPrime=2.1;
   
   // query -> url -> document
   Map<Query,Map<String, Document>> queryDict; 
