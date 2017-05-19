@@ -24,11 +24,11 @@ public class BM25Scorer extends AScorer {
 
   //take the cosine similarity scores
 
-  double urlweight = 0.9;
-  double titleweight  = 0.7;
-  double bodyweight = 0.3;
-  double headerweight = 0.6;
-  double anchorweight = 0.5;
+//  double urlweight = 0.9;
+//  double titleweight  = 0.7;
+//  double bodyweight = 0.3;
+//  double headerweight = 0.6;
+//  double anchorweight = 0.5;
 //  double smoothingBodyLength = 1.0;
 
   // BM25-specific weights
@@ -43,6 +43,13 @@ public class BM25Scorer extends AScorer {
 //  double pageRankLambdaPrime = 0.1;
 
 
+    double urlweight = 0.3;
+    double titleweight  = 0.6;
+    double bodyweight = 0.3;
+    double headerweight = 0.8;
+    double anchorweight = 0.5;
+    double smoothingBodyLength = 1.0;
+
     /////// BM25 specific weights ///////////
     double burl=.75;
     double btitle=1.0;
@@ -51,9 +58,9 @@ public class BM25Scorer extends AScorer {
     double banchor=0.8;
 
 
-    double k1=2.5;
-    double pageRankLambda=1.6;
-    double pageRankLambdaPrime=2.1;
+    double k1=1.0;
+    double pageRankLambda=2.0;
+    double pageRankLambdaPrime=-.5;
   
   // query -> url -> document
   Map<Query,Map<String, Document>> queryDict; 
@@ -200,6 +207,8 @@ public class BM25Scorer extends AScorer {
    * @param q the Query
    */
   public void normalizeTFs(Map<String,Map<String, Double>> tfs,Document d, Query q) {
+
+//      double length=smoothingBodyLength*(d.body_length+500); //body length normalization and smoothing
 
 
     for(Map.Entry<String,Map<String,Double>> entry : tfs.entrySet()){
